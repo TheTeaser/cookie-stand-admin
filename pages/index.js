@@ -102,25 +102,19 @@ function Main({ form, setForm, flag, setFlag, lastCookieCreatedHandler }) {
           </div>
         </div>
       </form>
-      <Placeholder flag={flag} form={form} />
-      <p className="p-10 text-2xl">Report Table Coming Soon...</p>
+      {flag ? (
+        <Placeholder form={form} />
+      ) : (
+        <p className="p-10 text-2xl">Report Table Coming Soon...</p>
+      )}
     </main>
   );
 }
 
-function Placeholder({ flag, form }) {
+function Placeholder({ form }) {
   return (
     <>
-      {flag ? (
-        <>
-          <p>Location: {form.location}</p>
-          <p>Minimum: {form.minimum}</p>
-          <p>Maximum: {form.maximum}</p>
-          <p>Average: {form.average}</p>
-        </>
-      ) : (
-        <></>
-      )}
+      <pre>{JSON.stringify(form, null, 2)}</pre>
     </>
   );
 }
