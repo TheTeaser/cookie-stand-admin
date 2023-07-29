@@ -1,44 +1,40 @@
-import { useState } from "react";
+import { useAuth } from "../contexts/auth";
 
-export default function LoginForm({ onLogin }) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+export default function LoginForm() {
+  const { login } = useAuth();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onLogin(username, password);
-    setUsername("");
-    setPassword("");
-  };
+  function loginHandler(event) {
+    event.preventDefault();
+    login(event.target.username.value, event.target.password.value);
+  }
 
   return (
-    <form onSubmit={handleSubmit} className="p-5">
-      <h2 className="mb-4 text-2xl font-bold">Login</h2>
-      <div className="flex flex-col mb-3">
-        <label htmlFor="username">Username</label>
+    <div className="flex items-center justify-center mt-20">
+      <form
+        className="flex flex-col items-center justify-center w-full max-w-sm p-6 bg-green-300 border border-black rounded-lg"
+        onSubmit={loginHandler}
+      >
+        <label className="mb-3 text-2xl font-bold text-center">User Name</label>
         <input
+          className="w-full px-4 py-2 mb-3 border rounded-lg"
           type="text"
-          id="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="p-2 bg-green-600 border"
+          name="username"
           required
         />
-      </div>
-      <div className="flex flex-col mb-3">
-        <label htmlFor="password">Password</label>
+        <label className="mb-3 text-2xl font-bold text-center">Password</label>
         <input
+          className="w-full px-4 py-2 mb-3 border rounded-lg"
           type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="p-2 border border-gray-300"
+          name="password"
           required
         />
-      </div>
-      <button type="submit" className="px-4 py-2 text-white bg-green-600 rounded">
-        Login
-      </button>
-    </form>
+        <button
+          className="w-full px-4 py-2 mt-6 text-2xl font-bold text-white bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
+          type="submit"
+        >
+          Sign In
+        </button>
+      </form>
+    </div>
   );
 }
