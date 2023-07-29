@@ -1,110 +1,65 @@
-import { useState } from "react";
-import Placeholder from "./PlaceHolder";
-import ReportTable from "./ReportTable";
-import { hours } from '../data';
-
-export default function Main() {
-  const [form, setForm] = useState({
-    location: "",
-    minimum: "",
-    maximum: "",
-    average: ""
-  });
-  const [flag, setFlag] = useState(false);
-  const [cookieStandData, setCookieStandData] = useState([]);
-  const [totals, setTotals] = useState(Array(hours.length).fill(0));
-
-  const lastCookieAddedHandler = () => {
-    setFlag(true);
-    createCookieStandRow();
-  };
-
-  const createCookieStandRow = () => {
-    const newCookieStand = [form.location, ...generateRandomData()];
-    setCookieStandData((prevData) => [...prevData, newCookieStand]);
-    updateTotals();
-  };
-
-  const generateRandomData = () => {
-    const min = parseInt(form.minimum);
-    const max = parseInt(form.maximum);
-    const avg = parseInt(form.average);
-    return hours.map(() => Math.floor(Math.random() * (max - min + 1)) + min * avg);
-  };
-
-  const updateTotals = () => {
-    const totals = Array(hours.length).fill(0);
-    cookieStandData.forEach((standData) => {
-      for (let i = 1; i < standData.length; i++) {
-        totals[i - 1] += standData[i];
-      }
-    });
-    setTotals(totals);
-  };
+export default function Main({ form, setForm, setFlag }) {
+  function lastCookieAddedHandler(event) {
+    event.preventDefault();
+    let obj = {
+      location: event.target.location.value,
+      minimum: event.target.minimum.value,
+      maximum: event.target.maximum.value,
+      average: event.target.average.value
+    };
+    setForm([...form, obj]);
+  }
 
   return (
-    <main className="flex flex-col items-center justify-center h-auto">
-      <div className="flex flex-col items-center justify-center w-auto h-auto p-10 bg-green-300">
-        <h1 className="p-5 text-4xl font-bold">Create Cookie Stand</h1>
-        <div>
-          <div className="flex justify-around">
-            <label className="text-2xl">Location</label>
+    <main className="flex flex-col items-center justify-center min-h-screen">
+      <form className="w-4/5 p-10 bg-green-300 rounded-lg" onSubmit={lastCookieAddedHandler}>
+        <h1 className="p-5 text-4xl font-bold">Create a Cookie Stand</h1>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="flex flex-col col-span-2">
+            <label className="text-2xl">Add a location</label>
             <input
-              className="w-11/12 mx-auto"
+              className="w-full px-3 py-2 mt-1 text-lg border border-gray-400 rounded-md"
               type="text"
-              value={form.location}
               name="location"
-              onChange={(event) =>
-                setForm({ ...form, location: event.target.value })
-              }
+              placeholder="Cookie Stand Location"
             />
           </div>
-          <div className="flex p-5">
-            <div className="flex flex-col p-5">
-              <label className="text-2xl">Minimum Customers per Hour</label>
-              <input
-                type="number"
-                value={form.minimum}
-                name="minimum"
-                onChange={(event) =>
-                  setForm({ ...form, minimum: event.target.value })
-                }
-              />
-            </div>
-            <div className="flex flex-col p-5">
-              <label className="text-2xl">Maximum Customers per Hour</label>
-              <input
-                type="number"
-                value={form.maximum}
-                name="maximum"
-                onChange={(event) =>
-                  setForm({ ...form, maximum: event.target.value })
-                }
-              />
-            </div>
-            <div className="flex flex-col p-5">
-              <label className="text-2xl">Average Cookies per Sale</label>
-              <input
-                type="number"
-                value={form.average}
-                name="average"
-                onChange={(event) =>
-                  setForm({ ...form, average: event.target.value })
-                }
-              />
-            </div>
+        </div>
+        <div className="grid grid-cols-3 gap-4 mt-6">
+          <div className="flex flex-col">
+            <label className="text-2xl">Minimum Customers / Hour</label>
+            <input
+              className="w-full px-3 py-2 mt-1 text-lg border border-gray-400 rounded-md"
+              type="number"
+              name="minimum"
+            />
           </div>
-          <div className="flex justify-end">
-            <button
-              className="flex items-center justify-center p-5 text-2xl bg-green-500"
-              onClick={lastCookieAddedHandler}
-            >
-              Create
-            </button>
+          <div className="flex flex-col">
+            <label className="text-2xl">Maximum Customers / Hour</label>
+            <input
+              className="w-full px-3 py-2 mt-1 text-lg border border-gray-400 rounded-md"
+              type="number"
+              name="maximum"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-2xl">Average Cookies / Sale</label>
+            <input
+              className="w-full px-3 py-2 mt-1 text-lg border border-gray-400 rounded-md"
+              type="number"
+              name="average"
+            />
           </div>
         </div>
-      </div>
-      {flag ? <ReportTable form={form} cookieStandData={cookieStandData} totals={totals} updateTotals={updateTotals} /> : <h2 className="p-10 text-2xl">No Cookie Stands Available...</h2>}
+        <div className="flex justify-end mt-6">
+          <button
+            className="px-6 py-3 text-xl font-semibold text-white bg-green-500 rounded-md"
+            type="submit"
+          >
+            Create
+          </button>
+        </div>
+      </form>
     </main>
   );
 }
